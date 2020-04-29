@@ -35,54 +35,116 @@
 # Import standard Python modules.
 import os
 import sys
-import exifread # Get from: conda install -c conda-forge exifread 
+import exifread # Get from: conda install -c conda-forge exifread
 
-d = os.getcwd()
 
-for fn in os.listdir(d):
-    
-    # TODO: Check an alternative for different extensions at:
-    # https://stackoverflow.com/questions/45637600/using-endswith-with-case-insensivity-in-python
-    if fn.lower().endswith('.jpg'):
+# ======================================================================================================================
+def getDateTime(original):
+    """Gets the date and time from the EXIF information of the file and
+    returns them on a format designed to math that of Dropbox:
+    YYYY-MM-DD HH.MM.SS
 
-        pfn = os.path.join(d, fn)
+    Arguments:
+    <str> original
+        Path and name of a file.
 
-        print("Filepath: {}".format(pfn)) #debug
+    Returns:
+    <str> date
+        YYYY-MM-DD
+    <str> time
+        HH.MM.SS
+    """
+ 
+    with open(original, "rb") as f:
 
-        #newfn = getNewFileName(pfn)
+        exif = exifread.process_file(f) # Get EXIF data from file.
 
-        with open(pfn, 'rb') as pf:
-            
-            exif = exifread.process_file(pf) # Get EXIF data from file.
+        #[print(i, exif[i]) for i in exif if "Date" in i] #debug
 
-            #[print(i, exif[i]) for i in exif if "Date" in i] #debug
+        try:
+            dt = str(exif["EXIF DateTimeOriginal"]) # Try to get original date and time.
+
+        except KeyError:
 
             try:
-                dt = str(exif['EXIF DateTimeOriginal']) # Try to get original date and time.
+                dt = str(exif["EXIF DateTimeDigitized"]) # Else, try to get digitized date and time.
 
             except KeyError:
 
                 try:
-                    dt = str(exif['EXIF DateTimeDigitized']) # Else, try to get digitized date and time.
-                
-                except KeyError:
+                    dt = str(exif["Image DateTime"]) # Finally, try to get the image date and time, else quit.
+
+                except:
+                    print("\nERROR: Cannot extract date and time from file {}\n".format(original))
+                    # TODO: (1) Return a false, that can be checked before the renaming operation instead of exiting.
+                    sys.exit()
+
+        #print(dt) #debug
+
+        dtd, dtt = dt.split(" ", 1) # Split into date and time.
+        #print(dtd, dtt) #debug
+
+        date = dtd.replace(":", "-")
+        time = dtt.replace(":", ".")
+        #print(day, time) #debug
+
+        return date, time
+# ======================================================================================================================
+
+
+# ======================================================================================================================
+def main():
+
+    d = os.getcwd()
+
+    # TODO: (2) Check an alternative for different extensions at:
+    #exts = [".avi", ".jpg", ".mp4", ".mpg"]
+    exts = [".jpg"]
+
+    for fn in os.listdir(d):
+
+        for extension in exts:
+
+            if fn.lower().endswith(extension):
+
+                original = os.path.join(d, fn)
+                print("Old filepath: {}".format(original)) #debug
+
+                date, time = getDateTime(original)
+
+                newfn = "{} {}{}".format(date, time, extension.upper())
+                #print("New Name: {}".format(newfn)) #debug
+
+                new = os.path.join(d, newfn)
+                print("New filepath: {}".format(new)) #debug
+
+                # Need a safe method to rename files. While the new file name exists, append a numerical index until the
+                # new file name does not match any existing files, to avoid overwritting.
+
+                add = 0
+
+                while os.path.exists(new):
+
+                    add += 1
+                    new = "{} {}-{}{}".format(date, time, add, extension.upper())
+
+                # Once there is no conflict with the new file name...
+                else:
 
                     try:
-                        dt = str(exif['Image DateTime']) # Finally, try to get the image date and time, else quit.
-                    
-                    except:
-                        print("\nERROR: Cannot extract date and time.\n")
-                        sys.exit()
+                        # Try rename operation.
+                        os.rename(original, new)
 
-            #print(dt) #debug
+                    except PermissionError:
 
-            dtd, dtt = dt.split(" ", 1) # Split into date and time.
-            #print(dtd, dtt) #debug
+                        # For permission related errors.
+                        print("Operation not permitted.")
 
-            day  = dtd.replace(":", "-")
-            time = dtt.replace(":", ".")
-            #print(day, time) #debug
+                    except OSError as error:
 
-            newfn = "{} {}.JPG".format(day, time)
-            print(newfn) #debug
+                        # For other errors.
+                        print(error) 
+# ======================================================================================================================
 
+if __name__ == "__main__":
+    main()
