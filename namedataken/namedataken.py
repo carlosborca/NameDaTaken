@@ -124,7 +124,7 @@ def main():
                     #print("Old Name: {}".format(fn)) #debug
                     #print("Old: {}".format(original)) #debug
 
-                    if newfn != fn:
+                    if newfn.lower() != fn.lower():
                     
                         new = os.path.join(d, newfn)
                         #print("New Name: {}".format(newfn)) #debug
