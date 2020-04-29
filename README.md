@@ -1,4 +1,4 @@
-# <img align="center" src="https://github.com/carlosborca/CrystaLattE/blob/master/media/logo/Logo.png" height=260>
+# <img align="center" src="https://github.com/carlosborca/NameDaTaken/blob/master/media/logo/Logo.png" height=260>
 
 Automated renaming of media files according to their creation date and time.
 
