@@ -69,7 +69,15 @@ git clone https://github.com/carlosborca/NameDaTaken.git
 
 ### How to run NameDaTaken
 
-The code uses the _current working directory_ as a reference point for execution and it will rename all the files that match the supported media extensions on that directory. Therefore, one needs to navigate to the folder where the media files are located and execute the Python 3 code there, within the NDT environment. That can be automated by doing something horrific like creating an alias in `~/.bashrc`, for example:
+The code uses the _current working directory_ as a reference point for execution and it will rename all the files that match the supported media extensions on that directory. Therefore, one needs to navigate to the folder where the media files are located and execute the Python 3 code there, within the NDT environment.
+
+```
+conda activate NDT
+cd /To/Directory/Where/The/Files/Are/
+python /Path/to/NameDaTaken/namedataken/namedataken.py
+```
+
+The first and third command can be grouped and automated by doing something _horrific_ like creating an alias in `~/.bashrc`, for example:
 
 ```
 alias NameDaTaken="conda activate NDT; python ~/Gits/NameDaTaken/namedataken/namedataken.py; conda deactivate"
