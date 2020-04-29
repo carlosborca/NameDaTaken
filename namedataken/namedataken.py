@@ -63,21 +63,26 @@ def getDateTime(original):
 
         try:
             dt = str(exif["EXIF DateTimeOriginal"]) # Try to get original date and time.
+            success = True
 
         except KeyError:
 
             try:
                 dt = str(exif["EXIF DateTimeDigitized"]) # Else, try to get digitized date and time.
+                success = True
 
             except KeyError:
 
                 try:
                     dt = str(exif["Image DateTime"]) # Finally, try to get the image date and time, else quit.
+                    success = True
 
                 except:
-                    print("\nERROR: Cannot extract date and time from file {}\n".format(original))
-                    # TODO: (1) Return a false, that can be checked before the renaming operation instead of exiting.
-                    sys.exit()
+                    print("\nWARNING: Cannot extract date and time from file {}\n".format(original))
+                    success = False
+
+                    # Return before processing any further.
+                    return None, None, success
 
         #print(dt) #debug
 
@@ -88,17 +93,18 @@ def getDateTime(original):
         time = dtt.replace(":", ".")
         #print(day, time) #debug
 
-        return date, time
+        return date, time, success
 # ======================================================================================================================
 
 
 # ======================================================================================================================
 def main():
 
+    fCount = 0
     d = os.getcwd()
 
     # TODO: (2) Check an alternative for different extensions at:
-    #exts = [".avi", ".jpg", ".mp4", ".mpg"]
+    #exts = [".avi", ".jpg", ".mp4", ".mpg", ".png"]
     exts = [".jpg"]
 
     for fn in os.listdir(d):
@@ -108,42 +114,51 @@ def main():
             if fn.lower().endswith(extension):
 
                 original = os.path.join(d, fn)
-                print("Old filepath: {}".format(original)) #debug
 
-                date, time = getDateTime(original)
+                # Get the date and time of the original file.
+                date, time, success = getDateTime(original)
 
-                newfn = "{} {}{}".format(date, time, extension.upper())
-                #print("New Name: {}".format(newfn)) #debug
+                # If retrieval of date and time was successful, proceed to creating the new file name.
+                if success:
 
-                new = os.path.join(d, newfn)
-                print("New filepath: {}".format(new)) #debug
+                    fCount += 1
+                    #print("Old: {}".format(original)) #debug
 
-                # Need a safe method to rename files. While the new file name exists, append a numerical index until the
-                # new file name does not match any existing files, to avoid overwritting.
+                    newfn = "{} {}{}".format(date, time, extension.upper())
+                    #print("New Name: {}".format(newfn)) #debug
 
-                add = 0
+                    new = os.path.join(d, newfn)
+                    #print("New: {}".format(new)) #debug
 
-                while os.path.exists(new):
+                    # Need a safe method to rename files. While the new file name exists, append a numerical index until the
+                    # new file name does not match any existing files, to avoid overwritting.
 
-                    add += 1
-                    new = "{} {}-{}{}".format(date, time, add, extension.upper())
+                    add = 0
 
-                # Once there is no conflict with the new file name...
-                else:
+                    while os.path.exists(new):
 
-                    try:
-                        # Try rename operation.
-                        os.rename(original, new)
+                        add += 1
+                        new = "{} {}-{}{}".format(date, time, add, extension.upper())
 
-                    except PermissionError:
+                    # Once there is no conflict with the new file name...
+                    else:
 
-                        # For permission related errors.
-                        print("Operation not permitted.")
+                        try:
 
-                    except OSError as error:
+                            # Try rename operation.
+                            os.rename(original, new)
 
-                        # For other errors.
-                        print(error) 
+                        except PermissionError:
+
+                            # For permission related errors.
+                            print("Operation not permitted.")
+
+                        except OSError as error:
+
+                            # For other errors.
+                            print(error)
+
+    print("Successfully renamed {} media files.".format(fCount))
 # ======================================================================================================================
 
 if __name__ == "__main__":

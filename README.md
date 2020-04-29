@@ -1,6 +1,6 @@
 # <img align="center" src="https://github.com/carlosborca/NameDaTaken/blob/master/media/logo/Logo.png" height=260>
 
-Automated renaming of media files according to their creation date and time.
+Automated renaming of JPEG files according to their creation date and time.
 
 | Category | Badges |
 |-------------|-------------|
@@ -69,7 +69,11 @@ git clone https://github.com/carlosborca/NameDaTaken.git
 
 ### How to run NameDaTaken
 
-The code uses the _current working directory_ as a reference point for execution and it will rename all the files that match the supported media extensions on that directory. Therefore, one needs to navigate to the folder where the media files are located and execute the Python 3 code there.
+The code uses the _current working directory_ as a reference point for execution and it will rename all the files that match the supported media extensions on that directory. Therefore, one needs to navigate to the folder where the media files are located and execute the Python 3 code there, within the NDT environment. That can be automated by doing something horrific like creating an alias in `~/.bashrc`, for example:
+
+```
+alias NameDaTaken="conda activate NDT; python ~/Gits/NameDaTaken/namedataken/namedataken.py; conda deactivate"
+```
 
 #### Copyright
 
