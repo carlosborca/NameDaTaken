@@ -9,7 +9,7 @@ Automated renaming of media files according to their creation date and time.
 
 ## Overview
 
-NameDaTaken is a Python 3 code that automates renaming of media files according their creation date and time following the format 'YYYY-MM-DD HH.MM.SS.ext', commonly used by Dropbox.
+NameDaTaken is a Python 3 code that automates renaming of media files according their creation date and time following the format `YYYY-MM-DD HH.MM.SS.ext`, commonly used by Dropbox.
 
 ## General Information
 
@@ -65,6 +65,7 @@ In you file system navigate to the location where you would like to place the ro
 
 ```
 git clone https://github.com/carlosborca/NameDaTaken.git
+```
 
 ### How to run NameDaTaken
 
