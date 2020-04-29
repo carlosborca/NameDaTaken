@@ -40,9 +40,8 @@ import exifread # Get from: conda install -c conda-forge exifread
 
 # ======================================================================================================================
 def getDateTime(original):
-    """Gets the date and time from the EXIF information of the file and
-    returns them on a format designed to math that of Dropbox:
-    YYYY-MM-DD HH.MM.SS
+    """Gets the date and time from the EXIF information of the file and returns them on a format designed to math that 
+    of Dropbox: YYYY-MM-DD HH.MM.SS
 
     Arguments:
     <str> original
@@ -103,7 +102,7 @@ def main():
     fCount = 0
     d = os.getcwd()
 
-    # TODO: (2) Check an alternative for different extensions at:
+    # TODO: (1) Check an alternative for different extensions:
     #exts = [".avi", ".jpg", ".mp4", ".mpg", ".png"]
     exts = [".jpg"]
 
@@ -121,42 +120,45 @@ def main():
                 # If retrieval of date and time was successful, proceed to creating the new file name.
                 if success:
 
-                    fCount += 1
+                    newfn = "{} {}{}".format(date, time, extension.upper())
+                    #print("Old Name: {}".format(fn)) #debug
                     #print("Old: {}".format(original)) #debug
 
-                    newfn = "{} {}{}".format(date, time, extension.upper())
-                    #print("New Name: {}".format(newfn)) #debug
+                    if newfn != fn:
+                    
+                        new = os.path.join(d, newfn)
+                        #print("New Name: {}".format(newfn)) #debug
+                        #print("New: {}".format(new)) #debug
 
-                    new = os.path.join(d, newfn)
-                    #print("New: {}".format(new)) #debug
+                        # Need a safe method to rename files. While the new file name exists, append a numerical index
+                        # until the new file name does not match any existing files, to avoid overwritting.
+                        add = 0
 
-                    # Need a safe method to rename files. While the new file name exists, append a numerical index until the
-                    # new file name does not match any existing files, to avoid overwritting.
+                        while os.path.exists(new):
 
-                    add = 0
+                            add += 1
+                            new = "{} {}-{}{}".format(date, time, add, extension.upper())
 
-                    while os.path.exists(new):
+                        # Once there is no conflict with the new file name...
+                        else:
 
-                        add += 1
-                        new = "{} {}-{}{}".format(date, time, add, extension.upper())
+                            try:
 
-                    # Once there is no conflict with the new file name...
-                    else:
+                                # Try rename operation.
+                                os.rename(original, new)
 
-                        try:
+                            except PermissionError:
 
-                            # Try rename operation.
-                            os.rename(original, new)
+                                # For permission related errors.
+                                print("Operation not permitted.")
 
-                        except PermissionError:
+                            except OSError as error:
 
-                            # For permission related errors.
-                            print("Operation not permitted.")
+                                # For other errors.
+                                print(error)
 
-                        except OSError as error:
-
-                            # For other errors.
-                            print(error)
+                            # Count the file as renamed.
+                            fCount += 1
 
     print("Successfully renamed {} media files.".format(fCount))
 # ======================================================================================================================
