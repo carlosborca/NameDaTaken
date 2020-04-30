@@ -137,7 +137,8 @@ def main():
                         while os.path.exists(new):
 
                             add += 1
-                            new = "{} {}-{}{}".format(date, time, add, extension.upper())
+                            newfn = "{} {}-{}{}".format(date, time, add, extension.upper())
+                            new = os.path.join(d, newfn)
 
                         # Once there is no conflict with the new file name...
                         else:
@@ -158,6 +159,7 @@ def main():
                                 print(error)
 
                             # Count the file as renamed.
+                            print("Renaming: {} -> {}".format(fn, newfn)) #debug
                             fCount += 1
 
     print("Successfully renamed {} media files.".format(fCount))
