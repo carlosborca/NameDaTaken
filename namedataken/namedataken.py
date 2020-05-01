@@ -120,7 +120,7 @@ def main():
                 # If retrieval of date and time was successful, proceed to creating the new file name.
                 if success:
 
-                    newfn = "{} {}{}".format(date, time, extension.upper())
+                    newfn = "{} {}{}".format(date, time, extension.lower())
                     #print("Old Name: {}".format(fn)) #debug
                     #print("Old: {}".format(original)) #debug
 
