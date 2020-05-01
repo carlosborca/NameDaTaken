@@ -137,7 +137,7 @@ def main():
                         while os.path.exists(new):
 
                             add += 1
-                            newfn = "{} {}-{}{}".format(date, time, add, extension.upper())
+                            newfn = "{} {}-{}{}".format(date, time, add, extension.lower())
                             new = os.path.join(d, newfn)
 
                         # Once there is no conflict with the new file name...
