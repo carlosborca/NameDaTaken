@@ -53,8 +53,10 @@ def main():
 
             if fn.endswith(extension):
 
+                fnlow = fn[:-4] + fn[-4:].lower()
+
                 original = os.path.join(d, fn)
-                new      = os.path.join(d, fn.lower())
+                new      = os.path.join(d, fnlow)
                     
                 # Need a safe method to rename files. While the new file name exists, append a numerical index
                 # until the new file name does not match any existing files, to avoid overwritting.
