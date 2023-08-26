@@ -45,10 +45,10 @@ conda config --set auto_activate_base false
 
 #### 2. Create a _Conda Environment_ for NameDaTaken
 
-NameDaTaken requires Python 3 and a module to extract the EXIF data out of media files. Conda offers the possibility of creating an _environment_ that contains all the dependencies required by NameDaTaken. To download and install the required software tools in a new _NDT_ environment execute the command below and follow the on-screen instructions:
+NameDaTaken requires Python 3 and modules to extract the EXIF and ID3 data out of media files. Conda offers the possibility of creating an _environment_ that contains all the dependencies required by NameDaTaken. To download and install the required software tools in a new _NDT_ environment execute the command below and follow the on-screen instructions:
 
 ```
-conda create -n NDT python=3.8 exifread -c conda-forge
+conda create -n NDT python=3.8 exifread mutagen -c conda-forge
 ```
 
 #### 3. Activate the _NDT_ environment
@@ -85,4 +85,4 @@ alias NameDaTaken="conda activate NDT; python ~/Gits/NameDaTaken/namedataken/nam
 
 #### Copyright
 
-Copyright (c) 2020, Carlos H. Borca
+Copyright (c) 2023, Carlos H. Borca
